@@ -15,7 +15,7 @@ import datetime
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import ssd1306
-import os
+import os,sys
 import re
 from time import sleep
 
@@ -27,7 +27,8 @@ try:
    serial = i2c(port=1, address=0x3C)
    device = ssd1306(i2c_port=serial, width=128, height=32, rotate=1)
 except:
-   print(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Error initializing OLED device', flush=True)
+   print(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Error initializing i2c OLED device')
+   device = None
 
 while True:
    wlan_if = os.popen('ip addr show wlan0').read()
@@ -41,6 +42,10 @@ while True:
       display_lines = wlan_ip_digits
    else:
       display_lines = ["No", "IP", "Address"]
+
+   if device is None:
+      print('  Exiting due to OLED device initialization error')
+      sys.exit(1)
 
    with canvas(device) as draw:
       for i, line in enumerate(display_lines):
