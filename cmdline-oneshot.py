@@ -3,8 +3,7 @@
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import ssd1306
-import os, sys
-from time import sleep
+import os
 import re
 
 serial = i2c(port=1, address=0x3C)
@@ -27,7 +26,7 @@ B,R--B,L
 0,0   --   0,31
 '''
 
-wlan_if = os.popen('ifconfig wlan0').read()
+wlan_if = os.popen('ip addr show wlan0').read()
 match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', wlan_if)
 if match:
    wlan_ip = match.group(1)
